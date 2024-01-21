@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using TaskManagmentAPI.Database;
 using TaskManagmentAPI.Model;
@@ -23,6 +24,7 @@ namespace TaskManagmentAPI.Controllers
 
         // GET: api/TaskModels
         [HttpGet]
+        [EnableRateLimiting("FixedWindowPolicy")]//Endpoint call Rate limiter
         public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasks()
         {
           if (_context.Tasks == null)
@@ -34,6 +36,8 @@ namespace TaskManagmentAPI.Controllers
 
         // GET: api/TaskModels/5
         [HttpGet("{id}")]
+        [EnableRateLimiting("TokenBucketPolicy")] //Endpoint call Rate limiter
+
         public async Task<ActionResult<TaskModel>> GetTaskModel(int id)
         {
           if (_context.Tasks == null)
@@ -53,6 +57,8 @@ namespace TaskManagmentAPI.Controllers
         // PUT: api/TaskModels/5
        
         [HttpPut("{id}")]
+        [EnableRateLimiting("ConcurrentWindowPolicy")] //Endpoint call Rate limiter
+
         public async Task<IActionResult> PutTaskModel(int id, TaskModel taskModel)
         {
             if (id != taskModel.Id)
@@ -84,6 +90,8 @@ namespace TaskManagmentAPI.Controllers
         // POST: api/TaskModels
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [EnableRateLimiting("ConcurrentWindowPolicy")] //Endpoint call Rate limiter
+
         public async Task<ActionResult<TaskModel>> PostTaskModel(TaskModel taskModel)
         {
           if (_context.Tasks == null)
@@ -98,6 +106,8 @@ namespace TaskManagmentAPI.Controllers
 
         // DELETE: api/TaskModels/5
         [HttpDelete("{id}")]
+        [EnableRateLimiting("ConcurrentWindowPolicy")] //Endpoint call Rate limiter
+
         public async Task<IActionResult> DeleteTaskModel(int id)
         {
             if (_context.Tasks == null)
